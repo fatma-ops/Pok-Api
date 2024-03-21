@@ -26,7 +26,6 @@ const PokemonList = () => {
   };  
 
   useEffect(() => {
-    fetchPokemonDetails('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
     const fetchPokemonDetails = async () => {
       try {
         const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
