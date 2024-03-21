@@ -7,7 +7,7 @@ const PokemonList = () => {
   useEffect(() => {
     const fetchPokemonDetails = async () => {
       try {
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40');
+        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
         const pokemonData = await Promise.all(
           response.data.results.map(async pokemon => {
             const pokemonResponse = await axios.get(pokemon.url);
