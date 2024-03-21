@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.min'
 import reportWebVitals from './reportWebVitals';
 import {
   createBrowserRouter,
@@ -15,7 +16,7 @@ const rooting = createBrowserRouter([
     {
       path: "/",
       element: <PokemonList/>,
-      errorElement: <ErrorPage/>
+      errorElement: <ErrorPage/>,
     },
     {
       path: "/my-pokedex",

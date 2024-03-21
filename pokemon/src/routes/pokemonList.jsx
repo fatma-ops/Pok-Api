@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loading from "./loading";
 
 
 const PokemonList = () => {
@@ -26,6 +27,26 @@ const PokemonList = () => {
 
   useEffect(() => {
     fetchPokemonDetails('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
+    const fetchPokemonDetails = async () => {
+      try {
+        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
+        const pokemonData = await Promise.all(
+          response.data.results.map(async pokemon => {
+            const pokemonResponse = await axios.get(pokemon.url);
+            return pokemonResponse.data;
+          })
+        );
+        setPokemonDetails(pokemonData);
+      } catch (error) {
+        console.error('Error fetching pokemon details:', error);
+      }
+    };
+
+    const loading = setTimeout(()=>{
+      fetchPokemonDetails();
+    }, 1500);
+
+    return () => clearTimeout(loading);
   }, []);
 
   const handleNextPage = () => {
@@ -41,7 +62,7 @@ const PokemonList = () => {
   };
 
   if (pokemonDetails.length === 0) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
 //
@@ -57,6 +78,7 @@ const PokemonList = () => {
         {pokemonDetails.map(pokemon => (
           <li key={pokemon.id}>
             <img src={pokemon.sprites.front_default} alt={pokemon.name}></img>
+            <img src={pokemon.sprites.front_default} alt={"sprite de pokemon"}></img>
             <div>
               <p>{pokemon.id}</p>
               <p>{pokemon.name}</p>
