@@ -15,7 +15,7 @@ const rooting = createBrowserRouter([
     {
       path: "/",
       element: <PokemonList/>,
-      errorElement: <ErrorPage/>
+      errorElement: <ErrorPage/>,
     },
     {
       path: "/my-pokedex",
