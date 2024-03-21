@@ -2,33 +2,38 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const PokemonList = () => {
+  const [pokemonNames, setPokemonNames] = useState([]);
 
-    const [pokemonDetails, setPokemonDetails] = useState(null);
+  useEffect(() => {
+    const fetchPokemonNames = async () => {
+      try {
+        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=40');
+        const names = response.data.results.map(pokemon => pokemon.name);
+        setPokemonNames(names);
+      } catch (error) {
+        console.error('Error fetching pokemon names:', error);
+      }
+    };
+    fetchPokemonNames();
+  }, []);
 
-    useEffect(() => {
-        const fetchPokemonDetails = async () => {
-            try {
-                const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
-                setPokemonDetails(response.data);
-            } catch (error) {
-                console.error('Error fetching pokemon details:', error);
-            }
-        };
-        fetchPokemonDetails();
-    });
+  if (pokemonNames.length === 0) {
+    return <div>Loading...</div>;
+  }
 
-    if (!pokemonDetails) {
-        return <div>Loading...</div>;
-    }
+  return (
+    <div>
+      <h2>Liste des Pokémons</h2>
+      <ul>
+        {pokemonNames.map((name, index) => (
+          <li key={index}>{name}</li>
 
-    return (
-        <div>
-            <h2>{pokemonDetails.name}</h2>
-            <p>Numéro: {pokemonDetails.id}</p>
-            <img  />
-            <button>Ajouter au Pokédex</button>
-        </div>
-    );
+        ))}
+    <button> Ajouter au pokédex</button>
+
+      </ul>
+    </div>
+  );
 };
 
 export default PokemonList;
