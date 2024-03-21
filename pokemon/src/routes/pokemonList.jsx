@@ -26,26 +26,7 @@ const PokemonList = () => {
   };  
 
   useEffect(() => {
-    const fetchPokemonDetails = async () => {
-      try {
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
-        const pokemonData = await Promise.all(
-          response.data.results.map(async pokemon => {
-            const pokemonResponse = await axios.get(pokemon.url);
-            return pokemonResponse.data;
-          })
-        );
-        setPokemonDetails(pokemonData);
-      } catch (error) {
-        console.error('Error fetching pokemon details:', error);
-      }
-    };
-
-    const loading = setTimeout(()=>{
-      fetchPokemonDetails();
-    }, 1500);
-
-    return () => clearTimeout(loading);
+    fetchPokemonDetails('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
   }, []);
 
   const handleNextPage = () => {
