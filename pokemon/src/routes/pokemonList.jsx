@@ -47,8 +47,10 @@ const PokemonList = () => {
 
 //
   const addToPokedex = (pokemon) => {
-    localStorage.setItem('selectedPokemon', JSON.stringify(pokemon));
-    console.log(localStorage.getItem('selectedPokemon'))
+    return(() => {
+      localStorage.setItem('pokemon', JSON.stringify([pokemon]));
+
+    })
   };
    
   return (
@@ -62,7 +64,7 @@ const PokemonList = () => {
               <p>Numéro : {pokemon.id}</p>
               <p> Nom : {pokemon.name}</p>
               <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
-              <button onClick={addToPokedex(pokemon.id)}>Ajouter au Pokédex</button>
+              <button onClick={addToPokedex(pokemon)}>Ajouter au Pokédex</button>
             </div>
           </li>
         ))}  
