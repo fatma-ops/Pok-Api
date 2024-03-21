@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loading from "./loading";
-
+import { Toaster, toast } from 'sonner';
 
 const PokemonList = () => {
   const [pokemonDetails, setPokemonDetails] = useState([]);
@@ -23,7 +23,7 @@ const PokemonList = () => {
     } catch (error) {
       console.error('Error fetching pokemon details:', error);
     }
-  };  
+  };
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
@@ -66,12 +66,35 @@ const PokemonList = () => {
 
 //
   const addToPokedex = (pokemon) => {
-    localStorage.setItem('selectedPokemon', JSON.stringify(pokemon));
-    console.log(localStorage.getItem('selectedPokemon'))
+    return () => {
+      const storagePokemon = localStorage.getItem('pokemon');
+
+      if (storagePokemon) {
+        let existingPokemon = JSON.parse(storagePokemon);
+        let pokemonExists = false;
+
+        existingPokemon.forEach(objetPokemon => {
+          if (objetPokemon.id === pokemon.id) {
+            pokemonExists = true;
+          }
+        });
+
+        if (!pokemonExists) {
+          existingPokemon.push(pokemon);
+          localStorage.setItem('pokemon', JSON.stringify(existingPokemon));
+        } else {
+          toast("Ce pokémon est déjà dans votre pokédex")
+        }
+      } else {
+        // Si le tableau n'existe pas, crée un nouveau tableau avec le nouveau Pokémon
+        localStorage.setItem('pokemon', JSON.stringify([pokemon]));
+      }
+    };
   };
    
   return (
     <div>
+      <Toaster />
       <h2>Liste des Pokémons</h2>
       <ul>
         {pokemonDetails.map(pokemon => (
@@ -82,7 +105,7 @@ const PokemonList = () => {
               <p>{pokemon.id}</p>
               <p>{pokemon.name}</p>
               <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
-              <button onClick={addToPokedex(pokemon.id)}>Ajouter au Pokédex</button>
+              <button onClick={addToPokedex(pokemon)}>Ajouter au Pokédex</button>
             </div>
           </li>
         ))}  

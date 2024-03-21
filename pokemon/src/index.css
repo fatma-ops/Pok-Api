@@ -90,3 +90,22 @@ code {
   from {transform: translateY(0);}
   to   {transform: translateY(-20px);}
 }
+
+.pokemon-dislike-button .hover-button {
+  visibility: hidden; /* Initially hide the heart button */
+}
+
+.pokemon-dislike-button:hover .hover-button {
+  visibility: visible; /* Show the heart button when hovering over the card */
+}
+
+.pokemon-dislike-button:hover {
+  transform: scale(1.1);
+  transition: transform 330ms ease-in-out;
+}
+
+.pokemon-dislike-button {
+  transform: scale(1);
+  transition: transform 330ms ease-in-out;
+}
+
