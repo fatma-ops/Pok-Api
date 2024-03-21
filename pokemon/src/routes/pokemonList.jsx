@@ -77,10 +77,9 @@ const PokemonList = () => {
         {pokemonDetails.map(pokemon => (
           <li key={pokemon.id}>
             <img src={pokemon.sprites.front_default} alt={pokemon.name}></img>
-            <img src={pokemon.sprites.front_default} alt={"sprite de pokemon"}></img>
             <div>
-              <p>{pokemon.id}</p>
-              <p>{pokemon.name}</p>
+              <p>Numéro : {pokemon.id}</p>
+              <p> Nom : {pokemon.name}</p>
               <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
               <button onClick={addToPokedex(pokemon.id)}>Ajouter au Pokédex</button>
             </div>
