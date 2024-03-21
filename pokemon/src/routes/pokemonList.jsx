@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loading from "./loading";
 
 const PokemonList = () => {
   const [pokemonDetails, setPokemonDetails] = useState([]);
@@ -18,12 +19,17 @@ const PokemonList = () => {
       } catch (error) {
         console.error('Error fetching pokemon details:', error);
       }
-    };  
-    fetchPokemonDetails();
+    };
+
+    const loading = setTimeout(()=>{
+      fetchPokemonDetails();
+    }, 1500);
+
+    return () => clearTimeout(loading);
   }, []);
 
   if (pokemonDetails.length === 0) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
@@ -32,7 +38,7 @@ const PokemonList = () => {
       <ul>
         {pokemonDetails.map(pokemon => (
           <li key={pokemon.id}>
-            <img src={pokemon.sprites.front_default}></img>
+            <img src={pokemon.sprites.front_default} alt={"sprite de pokemon"}></img>
             <div>
               <p>{pokemon.id}</p>
               <p>{pokemon.name}</p>
