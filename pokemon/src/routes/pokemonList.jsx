@@ -4,6 +4,7 @@ import Loading from "./loading";
 import {Toaster, toast} from 'sonner';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {Link} from "react-router-dom";
 
 const PokemonList = () => {
   const [pokemonDetails, setPokemonDetails] = useState([]);
@@ -94,6 +95,28 @@ const PokemonList = () => {
       }
     };
   };
+
+  const colours = {
+    normal: '#A8A77A',
+    fire: '#EE8130',
+    water: '#6390F0',
+    electric: '#F7D02C',
+    grass: '#7AC74C',
+    ice: '#96D9D6',
+    fighting: '#C22E28',
+    poison: '#A33EA1',
+    ground: '#E2BF65',
+    flying: '#A98FF3',
+    psychic: '#F95587',
+    bug: '#A6B91A',
+    rock: '#B6A136',
+    ghost: '#735797',
+    dragon: '#6F35FC',
+    dark: '#705746',
+    steel: '#B7B7CE',
+    fairy: '#D685AD',
+  };
+
   return (
     <>
       <Toaster/>
@@ -108,9 +131,10 @@ const PokemonList = () => {
           />
           <button onClick={searchPokemon}>Rechercher</button>
         </div>
+        <Link style={{width: "18%"}} className={"btn btn-warning"} to={{pathname: "/my-pokedex"}} ><img className={"pe-3"} style={{minWidth: "50px", width: "20%"}} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"}/>Accéder au pokédex personnel</Link>
         <div className={"d-flex gap-3 flex-wrap justify-content-center align-items-center"}>
           {pokemonDetails.map((pokemon, index) => (
-            <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem'}}>
+            <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem', backgroundColor: colours[pokemon.types[0].type.name]}}>
               <img className={"card-img-top"} src={pokemon.sprites.front_default} alt="Sprite pokémon"/>
               <div className={"card-body d-flex flex-column align-items-center justify-content-center"}>
                 <p className={"card-text"}>{pokemon.id} - {pokemon.name}</p>
