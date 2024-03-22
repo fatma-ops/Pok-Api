@@ -108,12 +108,12 @@ const PokemonList = () => {
               <button onClick={addToPokedex(pokemon)}>Ajouter au Pokédex</button>
             </div>
           </li>
-        ))}  
+        ))}
       </ul>
       <button onClick={handlePrevPage} disabled={!prevPage}>Page précédente</button>
       <button onClick={handleNextPage} disabled={!nextPage}>Page suivante</button>
     </div>
   );
-};  
+};
 
 export default PokemonList;
