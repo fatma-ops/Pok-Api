@@ -5,6 +5,7 @@ import { Toaster, toast } from 'sonner';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 const PokemonList = () => {
     const [allPokemon, setAllPokemon] = useState([]);
@@ -118,15 +119,8 @@ const PokemonList = () => {
         <>
             <Toaster />
             <h1 style={{ fontSize: '5vw', fontFamily: 'Pokemon Solid, sans-serif', marginBottom: '5%', color: '#ffcb05' }} className={"text-center"}>My Pokémon</h1>
+            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}  className={"d-flex flex-column justify-content-center align-items-center gap-4"}/>
             <div className={"d-flex flex-column justify-content-center align-items-center gap-4"}>
-                <div>
-                    <input
-                        type="text"
-                        placeholder="Rechercher par nom..."
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
-                </div>
                 <Link style={{ width: "20vw", fontSize: "1vw" }} className={"btn btn-warning"} to={{ pathname: "/my-pokedex" }}>
                     <img className={"pe-3"} style={{ minWidth: "50px", width: "20%" }} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"} />
                     Accéder au pokédex personnel
