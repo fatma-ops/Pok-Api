@@ -26,7 +26,11 @@ const PokemonList = () => {
             }
         };
 
-        fetchAllPokemon();
+        const loading = setTimeout(()=>{
+            fetchAllPokemon();
+        }, 1500);
+
+        return () => clearTimeout(loading);
     }, []);
 
     useEffect(() => {
@@ -123,15 +127,12 @@ const PokemonList = () => {
           <input
             type="text"
             placeholder="Rechercher par nom..."
+            className={"form-control border-1"}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
           </div>
-                <Link style={{ width: "20vw", fontSize: "1vw" }} className={"btn btn-warning"} to={{ pathname: "/my-pokedex" }}>
-                    <img className={"pe-3"} style={{ minWidth: "50px", width: "20%" }} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"} />
-                    Accéder au pokédex personnel
-                </Link>
-                <Link style={{width: "20vw", fontSize: "1vw"}} className={"btn btn-warning"} to={{pathname: "/my-pokedex"}} ><img className={"pe-3"} style={{minWidth: "50px", width: "20%"}} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"}/>Accéder au pokédex personnel</Link>
+            <Link style={{width: "20vw", fontSize: "1vw"}} className={"btn btn-warning"} to={{pathname: "/my-pokedex"}} ><img className={"pe-3"} style={{minWidth: "50px", width: "20%"}} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"}/>Accéder au pokédex personnel</Link>
         <div className={"d-flex gap-3 flex-wrap justify-content-center align-items-center"}>
                     {displayedPokemon.map((pokemon, index) => (
                         <div key={index} className={"card pokemon-dislike-button"} style={{ width: '18rem', backgroundColor: colours[pokemon.types[0].type.name] }}>
