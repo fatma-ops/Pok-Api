@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loading from "./loading";
+import { Toaster, toast } from 'sonner';
 
 const PokemonList = () => {
     const [pokemonDetails, setPokemonDetails] = useState([]);
@@ -70,8 +71,35 @@ const PokemonList = () => {
         return <Loading />;
     }
 
+  const addToPokedex = (pokemon) => {
+    return () => {
+      const storagePokemon = localStorage.getItem('pokemon');
+
+      if (storagePokemon) {
+        let existingPokemon = JSON.parse(storagePokemon);
+        let pokemonExists = false;
+
+        existingPokemon.forEach(objetPokemon => {
+          if (objetPokemon.id === pokemon.id) {
+            pokemonExists = true;
+          }
+        });
+
+        if (!pokemonExists) {
+          existingPokemon.push(pokemon);
+          localStorage.setItem('pokemon', JSON.stringify(existingPokemon));
+        } else {
+          toast("Ce pokémon est déjà dans votre pokédex")
+        }
+      } else {
+        // Si le tableau n'existe pas, crée un nouveau tableau avec le nouveau Pokémon
+        localStorage.setItem('pokemon', JSON.stringify([pokemon]));
+      }
+    };
+  };
     return (
         <div>
+        <Toaster />
             <h2>Liste des Pokémons</h2>
             <div>
                 <input
@@ -83,20 +111,21 @@ const PokemonList = () => {
                 <button onClick={searchPokemon}>Rechercher</button>
             </div>
             <ul>
-                {pokemonDetails.map(pokemon => (
-                    <li key={pokemon.id}>
-                        <img src={pokemon.sprites.front_default} alt={pokemon.name}></img>
-                        <div>
-                            <p>Numéro : {pokemon.id}</p>
-                            <p>Nom : {pokemon.name}</p>
-                            <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
-                            <button onClick={() => addToPokedex(pokemon)}>Ajouter au Pokédex</button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-            {prevPage && <button onClick={handlePrevPage}>Page précédente</button>}
-            {nextPage && <button onClick={handleNextPage}>Page suivante</button>}
+              {pokemonDetails.map(pokemon => (
+                <li key={pokemon.id}>
+                  <img src={pokemon.sprites.front_default} alt={pokemon.name}></img>
+                  <img src={pokemon.sprites.front_default} alt={"sprite de pokemon"}></img>
+                  <div>
+                    <p>{pokemon.id}</p>
+                    <p>{pokemon.name}</p>
+                    <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
+                    <button onClick={addToPokedex(pokemon)}>Ajouter au Pokédex</button>
+                  </div>
+                </li>
+              ))}
+             </ul>
+              <button onClick={handlePrevPage} disabled={!prevPage}>Page précédente</button>
+              <button onClick={handleNextPage} disabled={!nextPage}>Page suivante</button>
         </div>
     );
 };

@@ -1,16 +1,26 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import {faHeartBroken} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function MyPokedex () {
     const [pokedex, setPokedex] = useState([])
 
     useEffect(() => {
         const pokedexCache = localStorage.getItem('pokemon')
-        if (pokedexCache) setPokedex(pokedexCache)
+        if (pokedexCache) setPokedex(JSON.parse(pokedexCache))
     }, [])
 
-  function suppressionPokedex() {
-    localStorage.removeItem('pokemon')
+  function suppressionPokedex(type = "all") {
+    localStorage.clear()
     setPokedex([])
+  }
+
+  function suppressionPokemon(id) {
+    // Mettre à jour l'état en filtrant les pokémons pour exclure celui avec l'ID spécifié
+    const updatedPokedex = pokedex.filter(pokemon => pokemon.id !== id);
+    setPokedex(updatedPokedex);
+    // Mettre à jour le stockage local
+    localStorage.setItem('pokemon', JSON.stringify(updatedPokedex));
   }
 
   return (
@@ -21,14 +31,17 @@ export default function MyPokedex () {
               data-bs-target="#suppressionPokedex" type={"button"}>Supprimer tout mon
         pokédex
       </button>
-      <div style={{marginTop: "5%"}} className={"d-flex justify-content-center align-items-center"}>
+      <div style={{marginTop: "5%"}} className={"d-flex justify-content-center align-items-center gap-4 flex-wrap"}>
         {pokedex.length > 0 ? pokedex.map((pokemon, index) => {
             return (
-              <div key={index} className={"card"} style={{width: '18rem'}}>
-                <img className={"card-img-top"} src={pokemon.sprite} alt="Sprite pokémon"/>
-                <div className={"card-body"}>
-                  <p className={"card-text"}>Some quick example text to build on the card title and make up
-                    the bulk of the card's content.</p>
+              <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem'}}>
+                <button style={{width: '15%'}} onClick={() => suppressionPokemon(pokemon.id)}
+                        className={"btn btn-danger mt-1 align-self-end me-1 hover-button"} type={'button'}>
+                  <FontAwesomeIcon icon={faHeartBroken}/></button>
+                <img className={"card-img-top"} src={pokemon.sprites.front_default} alt="Sprite pokémon"/>
+                <div className={"card-body d-flex flex-column align-items-center justify-content-center"}>
+                  <p className={"card-text"}>{pokemon.id} - {pokemon.name}</p>
+                  <p className={"card-text"}>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
                 </div>
               </div>
             )
@@ -90,7 +103,7 @@ export default function MyPokedex () {
                 >
                   Non, j'ai fait une erreur
                 </button>
-                <button type="button" className="btn btn-danger" onClick={suppressionPokedex}>
+                <button data-bs-dismiss="modal" type="button" className="btn btn-danger" onClick={suppressionPokedex}>
                   Libérer les pokémons
                 </button>
               </div>
