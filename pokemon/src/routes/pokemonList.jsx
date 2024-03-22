@@ -131,7 +131,7 @@ const PokemonList = () => {
           />
           <button onClick={searchPokemon}>Rechercher</button>
         </div>
-        <Link style={{width: "18%"}} className={"btn btn-warning"} to={{pathname: "/my-pokedex"}} ><img className={"pe-3"} style={{minWidth: "50px", width: "20%"}} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"}/>Accéder au pokédex personnel</Link>
+        <Link style={{width: "20vw", fontSize: "1vw"}} className={"btn btn-warning"} to={{pathname: "/my-pokedex"}} ><img className={"pe-3"} style={{minWidth: "50px", width: "20%"}} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"}/>Accéder au pokédex personnel</Link>
         <div className={"d-flex gap-3 flex-wrap justify-content-center align-items-center"}>
           {pokemonDetails.map((pokemon, index) => (
             <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem', backgroundColor: colours[pokemon.types[0].type.name]}}>
