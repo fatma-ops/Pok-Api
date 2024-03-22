@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {faHeartBroken} from "@fortawesome/free-solid-svg-icons";
+import {faArrowCircleLeft, faHeartBroken} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Link} from "react-router-dom";
 
 export default function MyPokedex () {
     const [pokedex, setPokedex] = useState([])
@@ -10,7 +11,7 @@ export default function MyPokedex () {
         if (pokedexCache) setPokedex(JSON.parse(pokedexCache))
     }, [])
 
-  function suppressionPokedex(type = "all") {
+  function suppressionPokedex() {
     localStorage.clear()
     setPokedex([])
   }
@@ -23,9 +24,32 @@ export default function MyPokedex () {
     localStorage.setItem('pokemon', JSON.stringify(updatedPokedex));
   }
 
+  const colours = {
+    normal: '#A8A77A',
+    fire: '#EE8130',
+    water: '#6390F0',
+    electric: '#F7D02C',
+    grass: '#7AC74C',
+    ice: '#96D9D6',
+    fighting: '#C22E28',
+    poison: '#A33EA1',
+    ground: '#E2BF65',
+    flying: '#A98FF3',
+    psychic: '#F95587',
+    bug: '#A6B91A',
+    rock: '#B6A136',
+    ghost: '#735797',
+    dragon: '#6F35FC',
+    dark: '#705746',
+    steel: '#B7B7CE',
+    fairy: '#D685AD',
+  };
+
   return (
-    <div className={"d-flex flex-column justify-content-center align-items-center"}>
-      <h1 className={"mt-5"}>My pokédex</h1>
+    <>
+      <Link className={"btn btn-primary m-5"} to={{pathname: "/"}}><FontAwesomeIcon className={"pe-2"} icon={faArrowCircleLeft}/>Retour à la page d'accueil</Link>
+      <div className={"d-flex flex-column justify-content-center align-items-center"}>
+      <h1>My pokédex</h1>
       <h3>Liste des pokémons attrapés</h3>
       <button className={"btn btn-danger mt-5"} data-bs-toggle="modal"
               data-bs-target="#suppressionPokedex" type={"button"}>Supprimer tout mon
@@ -34,7 +58,7 @@ export default function MyPokedex () {
       <div style={{marginTop: "5%"}} className={"d-flex justify-content-center align-items-center gap-4 flex-wrap"}>
         {pokedex.length > 0 ? pokedex.map((pokemon, index) => {
             return (
-              <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem'}}>
+              <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem', backgroundColor: colours[pokemon.types[0].type.name]}}>
                 <button style={{width: '15%'}} onClick={() => suppressionPokemon(pokemon.id)}
                         className={"btn btn-danger mt-1 align-self-end me-1 hover-button"} type={'button'}>
                   <FontAwesomeIcon icon={faHeartBroken}/></button>
@@ -111,5 +135,6 @@ export default function MyPokedex () {
           </div>
         </div>
     </div>
+    </>
   )
 }
