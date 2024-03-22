@@ -3,68 +3,47 @@ import axios from 'axios';
 import Loading from "./loading";
 
 const PokemonList = () => {
-    const [pokemonDetails, setPokemonDetails] = useState([]);
+    const [allPokemon, setAllPokemon] = useState([]);
+    const [displayedPokemon, setDisplayedPokemon] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [nextPage, setNextPage] = useState('');
-    const [prevPage, setPrevPage] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchPokemonDetails = async (url) => {
-        setLoading(true);
-        try {
-            const response = await axios.get(url);
-            const pokemonData = await Promise.all(
-                response.data.results.map(async pokemon => {
-                    const pokemonResponse = await axios.get(pokemon.url);
-                    return pokemonResponse.data;
-                })
-            );
-            setPokemonDetails(pokemonData);
-            setNextPage(response.data.next);
-            setPrevPage(response.data.previous);
-        } catch (error) {
-            console.error('Error fetching pokemon details:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    // Charger tous les noms et URL de Pokémon au démarrage
     useEffect(() => {
-        fetchPokemonDetails('https://pokeapi.co/api/v2/pokemon/?limit=40&offset=0');
+        setLoading(true);
+        const fetchAllPokemon = async () => {
+            try {
+                const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=1000');
+                setAllPokemon(response.data.results);
+            } catch (error) {
+                console.error('Error fetching all pokemon:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllPokemon();
     }, []);
 
-    const handleNextPage = () => {
-        if (nextPage) {
-            fetchPokemonDetails(nextPage);
-        }
-    };
+    // Gérer la recherche et l'affichage des Pokémon
+    useEffect(() => {
+        const fetchPokemonDetails = async (pokemonArray) => {
+            return Promise.all(pokemonArray.map(async (pokemon) => {
+                const response = await axios.get(pokemon.url);
+                return response.data;
+            }));
+        };
 
-    const handlePrevPage = () => {
-        if (prevPage) {
-            fetchPokemonDetails(prevPage);
-        }
-    };
+        const matchedPokemon = searchTerm ? allPokemon.filter(pokemon =>
+            pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+        ) : allPokemon.slice(0, 40); // Limite les résultats à 40 si aucun terme de recherche
 
-    const addToPokedex = (pokemon) => {
-        localStorage.setItem('selectedPokemon', JSON.stringify(pokemon));
-        console.log(localStorage.getItem('selectedPokemon'));
-    };
-
-    const searchPokemon = async () => {
-        if (!searchTerm) return; // Ne recherche rien si le terme de recherche est vide
-        setLoading(true);
-        try {
-            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`);
-            setPokemonDetails([response.data]); // Affiche uniquement le Pokémon recherché
-            setNextPage('');
-            setPrevPage('');
-        } catch (error) {
-            console.error('Error fetching pokemon:', error);
-            setPokemonDetails([]); // Efface les résultats en cas d'erreur
-        } finally {
-            setLoading(false);
+        if (matchedPokemon.length) {
+            fetchPokemonDetails(matchedPokemon).then(setDisplayedPokemon);
+        } else {
+            setDisplayedPokemon([]);
         }
-    };
+    }, [searchTerm, allPokemon]);
 
     if (loading) {
         return <Loading />;
@@ -73,30 +52,28 @@ const PokemonList = () => {
     return (
         <div>
             <h2>Liste des Pokémons</h2>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Rechercher par nom..."
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-                <button onClick={searchPokemon}>Rechercher</button>
-            </div>
-            <ul>
-                {pokemonDetails.map(pokemon => (
-                    <li key={pokemon.id}>
-                        <img src={pokemon.sprites.front_default} alt={pokemon.name}></img>
-                        <div>
-                            <p>Numéro : {pokemon.id}</p>
-                            <p>Nom : {pokemon.name}</p>
-                            <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
-                            <button onClick={() => addToPokedex(pokemon)}>Ajouter au Pokédex</button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-            {prevPage && <button onClick={handlePrevPage}>Page précédente</button>}
-            {nextPage && <button onClick={handleNextPage}>Page suivante</button>}
+            <input
+                type="text"
+                placeholder="Rechercher par nom..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+            />
+            {displayedPokemon.length > 0 ? (
+                <ul>
+                    {displayedPokemon.map((pokemon) => (
+                        <li key={pokemon.id}>
+                            <img src={pokemon.sprites.front_default} alt={pokemon.name} />
+                            <div>
+                                <p>Numéro : {pokemon.id}</p>
+                                <p>Nom : {pokemon.name}</p>
+                                <p>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Aucun Pokémon correspondant trouvé.</p>
+            )}
         </div>
     );
 };
