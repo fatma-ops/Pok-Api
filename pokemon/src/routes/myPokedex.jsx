@@ -2,20 +2,25 @@ import React, {useEffect, useState} from "react";
 import {faArrowCircleLeft, faHeartBroken} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link} from "react-router-dom";
+import SearchBar from "./SearchBar";
 
-export default function MyPokedex() {
-  const [pokedex, setPokedex] = useState([])
+export default function MyPokedex () {
+    const [pokedex, setPokedex] = useState([])
+    const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const pokedexCache = localStorage.getItem('pokemon')
-    if (pokedexCache) setPokedex(JSON.parse(pokedexCache))
-  }, [])
+    useEffect(() => {
+        const pokedexCache = localStorage.getItem('pokemon')
+        if (pokedexCache) setPokedex(JSON.parse(pokedexCache))
+    }, [])
 
   function suppressionPokedex() {
     localStorage.clear()
     setPokedex([])
   }
 
+  const filteredPokedex = pokedex.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   function suppressionPokemon(id) {
     // Mettre à jour l'état en filtrant les pokémons pour exclure celui avec l'ID spécifié
     const updatedPokedex = pokedex.filter(pokemon => pokemon.id !== id);
@@ -49,62 +54,63 @@ export default function MyPokedex() {
     <>
       <Link className={"btn btn-primary m-5"} to={{pathname: "/"}}><FontAwesomeIcon className={"pe-2"} icon={faArrowCircleLeft}/>Retour à la page d'accueil</Link>
       <div className={"d-flex flex-column justify-content-center align-items-center"}>
-        <h1>My pokédex</h1>
-        <h3>Liste des pokémons attrapés</h3>
-        <button className={"btn btn-danger mt-5"} data-bs-toggle="modal"
-                data-bs-target="#suppressionPokedex" type={"button"}>Supprimer tout mon
-          pokédex
-        </button>
-        <div style={{marginTop: "5%"}} className={"d-flex justify-content-center align-items-center gap-4 flex-wrap"}>
-          {pokedex.length > 0 ? pokedex.map((pokemon, index) => {
-              return (
-                <div key={index} className={"card d-flex pokemon-dislike-button"}
-                     style={{width: '18rem', backgroundColor: colours[pokemon.types[0].type.name]}}>
-                  <button style={{width: '15%'}} onClick={() => suppressionPokemon(pokemon.id)}
-                          className={"btn btn-danger mt-1 align-self-end me-1 hover-button"} type={'button'}>
-                    <FontAwesomeIcon icon={faHeartBroken}/></button>
-                  <img className={"card-img-top"} src={pokemon.sprites.front_default} alt="Sprite pokémon"/>
-                  <div className={"card-body d-flex flex-column align-items-center justify-content-center"}>
-                    <p className={"card-text"}>{pokemon.id} - {pokemon.name}</p>
-                    <p className={"card-text"}>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
-                  </div>
-                </div>
-              )
-            }) :
-            <div className={"card align-items-center"} style={{width: "18rem"}}>
-              <img className={"rounded-circle w-75 mt-1"}
-                   src={"https://media.licdn.com/dms/image/D4E03AQFYvqKYbIbN-A/profile-displayphoto-shrink_800_800/0/1681854235502?e=1716422400&v=beta&t=N4_XijMMUHfd0xLqzBl233Io2nGMIDDEWP-awbEXOEY"}
-                   alt="Mourad"/>
-              <div className={"card-body text-center"}>
-                <h3 className={"card-title animate-character"}>Pokémon rare !</h3>
-                <p className={"card-text"}><b>Moumou</b></p>
-                <hr/>
-                <h4>Statistiques</h4>
-                <p style={{height: '15px'}}>Vitesse</p>
-                <div style={{width: '180px'}} className={"progress"}>
-                  <div className="progress-bar w-100 bg-secondary" role="progressbar" aria-valuenow="0"
-                       aria-valuemin="0"
-                       aria-valuemax="100"></div>
-                </div>
-                <p style={{height: '15px'}}>Attaque</p>
-                <div className={"progress mt-0"}>
-                  <div className="progress-bar w-100 bg-danger" role="progressbar" aria-valuenow="25"
-                       aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p style={{height: '15px'}}>Défense</p>
-                <div className={"progress"}>
-                  <div className="progress-bar w-100" role="progressbar" aria-valuenow="50"
-                       aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p style={{height: '15px'}}>Santé</p>
-                <div className={"progress"}>
-                  <div className="progress-bar w-100 bg-success" role="progressbar" aria-valuenow="75"
-                       aria-valuemin="0" aria-valuemax="100"></div>
+      <h1>My pokédex</h1>
+        <div>
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </div>
+      <h3>Liste des pokémons attrapés</h3>
+      <button className={"btn btn-danger mt-5"} data-bs-toggle="modal"
+              data-bs-target="#suppressionPokedex" type={"button"}>Supprimer tout mon
+        pokédex
+      </button>
+      <div style={{marginTop: "5%"}} className={"d-flex justify-content-center align-items-center gap-4 flex-wrap"}>
+        {pokedex.length > 0 ? filteredPokedex.map((pokemon, index) => {
+            return (
+              <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem', backgroundColor: colours[pokemon.types[0].type.name]}}>
+                <button style={{width: '15%'}} onClick={() => suppressionPokemon(pokemon.id)}
+                        className={"btn btn-danger mt-1 align-self-end me-1 hover-button"} type={'button'}>
+                  <FontAwesomeIcon icon={faHeartBroken}/></button>
+                <img className={"card-img-top"} src={pokemon.sprites.front_default} alt="Sprite pokémon"/>
+                <div className={"card-body d-flex flex-column align-items-center justify-content-center"}>
+                  <p className={"card-text"}>{pokemon.id} - {pokemon.name}</p>
+                  <p className={"card-text"}>Type(s): {pokemon.types.map(type => type.type.name).join(', ')}</p>
                 </div>
               </div>
+            )
+          }) :
+          <div className={"card align-items-center"} style={{width: "18rem"}}>
+            <img className={"rounded-circle w-75 mt-1"}
+                 src={"https://imgs.search.brave.com/7rtD-PYzCM9-IQVkUaQlMts-3pMSNc6h4eWlzvwYQKM/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvNDc4/OTE1OTM2L2ZyL3Bo/b3RvL2hvbW1lLWF2/ZWMtbWF1eC1kZS10/JUMzJUFBdGUuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPWlR/UE51RHhPMEhYb2V5/d09wbXVPQVJqMTJl/WlhkQTNtS1FidGNZ/Qk4tamM9"}
+                 alt="Tetedrole"/>
+            <div className={"card-body text-center"}>
+              <h3 className={"card-title animate-character"}>Pokémon rare !</h3>
+              <p className={"card-text"}><b>Moumou</b></p>
+              <hr/>
+              <h4>Statistiques</h4>
+              <p style={{height: '15px'}}>Vitesse</p>
+              <div style={{width: '180px'}} className={"progress"}>
+                <div className="progress-bar w-100 bg-secondary" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                     aria-valuemax="100"></div>
+              </div>
+              <p style={{height: '15px'}}>Attaque</p>
+              <div className={"progress mt-0"}>
+                <div className="progress-bar w-100 bg-danger" role="progressbar" aria-valuenow="25"
+                     aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p style={{height: '15px'}}>Défense</p>
+              <div className={"progress"}>
+                <div className="progress-bar w-100" role="progressbar" aria-valuenow="50"
+                     aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p style={{height: '15px'}}>Santé</p>
+              <div className={"progress"}>
+                <div className="progress-bar w-100 bg-success" role="progressbar" aria-valuenow="75"
+                     aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
             </div>
-          }
-        </div>
+          </div>
+        }
+      </div>
         {/* Modal */}
         <div
           className="modal fade"
@@ -136,7 +142,7 @@ export default function MyPokedex() {
             </div>
           </div>
         </div>
-      </div>
+    </div>
     </>
   )
 }
