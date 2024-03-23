@@ -2,9 +2,11 @@ import React, {useEffect, useState} from "react";
 import {faArrowCircleLeft, faHeartBroken} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link} from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 export default function MyPokedex () {
     const [pokedex, setPokedex] = useState([])
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const pokedexCache = localStorage.getItem('pokemon')
@@ -16,6 +18,9 @@ export default function MyPokedex () {
     setPokedex([])
   }
 
+  const filteredPokedex = pokedex.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   function suppressionPokemon(id) {
     // Mettre à jour l'état en filtrant les pokémons pour exclure celui avec l'ID spécifié
     const updatedPokedex = pokedex.filter(pokemon => pokemon.id !== id);
@@ -50,13 +55,16 @@ export default function MyPokedex () {
       <Link className={"btn btn-primary m-5"} to={{pathname: "/"}}><FontAwesomeIcon className={"pe-2"} icon={faArrowCircleLeft}/>Retour à la page d'accueil</Link>
       <div className={"d-flex flex-column justify-content-center align-items-center"}>
       <h1>My pokédex</h1>
+        <div>
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </div>
       <h3>Liste des pokémons attrapés</h3>
       <button className={"btn btn-danger mt-5"} data-bs-toggle="modal"
               data-bs-target="#suppressionPokedex" type={"button"}>Supprimer tout mon
         pokédex
       </button>
       <div style={{marginTop: "5%"}} className={"d-flex justify-content-center align-items-center gap-4 flex-wrap"}>
-        {pokedex.length > 0 ? pokedex.map((pokemon, index) => {
+        {pokedex.length > 0 ? filteredPokedex.map((pokemon, index) => {
             return (
               <div key={index} className={"card d-flex pokemon-dislike-button"} style={{width: '18rem', backgroundColor: colours[pokemon.types[0].type.name]}}>
                 <button style={{width: '15%'}} onClick={() => suppressionPokemon(pokemon.id)}
@@ -72,8 +80,8 @@ export default function MyPokedex () {
           }) :
           <div className={"card align-items-center"} style={{width: "18rem"}}>
             <img className={"rounded-circle w-75 mt-1"}
-                 src={"https://media.licdn.com/dms/image/D4E03AQFYvqKYbIbN-A/profile-displayphoto-shrink_800_800/0/1681854235502?e=1716422400&v=beta&t=N4_XijMMUHfd0xLqzBl233Io2nGMIDDEWP-awbEXOEY"}
-                 alt="Mourad"/>
+                 src={"https://imgs.search.brave.com/7rtD-PYzCM9-IQVkUaQlMts-3pMSNc6h4eWlzvwYQKM/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvNDc4/OTE1OTM2L2ZyL3Bo/b3RvL2hvbW1lLWF2/ZWMtbWF1eC1kZS10/JUMzJUFBdGUuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPWlR/UE51RHhPMEhYb2V5/d09wbXVPQVJqMTJl/WlhkQTNtS1FidGNZ/Qk4tamM9"}
+                 alt="Tetedrole"/>
             <div className={"card-body text-center"}>
               <h3 className={"card-title animate-character"}>Pokémon rare !</h3>
               <p className={"card-text"}><b>Moumou</b></p>

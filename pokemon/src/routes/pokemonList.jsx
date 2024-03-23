@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loading from "./loading";
-import {Toaster, toast} from 'sonner';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
-import {Link} from "react-router-dom";
+import { Toaster, toast } from 'sonner';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 const PokemonList = () => {
     const [allPokemon, setAllPokemon] = useState([]);
@@ -26,11 +27,9 @@ const PokemonList = () => {
             }
         };
 
-        const loading = setTimeout(()=>{
-            fetchAllPokemon();
-        }, 1500);
 
-        return () => clearTimeout(loading);
+        fetchAllPokemon();
+
     }, []);
 
     useEffect(() => {
@@ -65,6 +64,7 @@ const PokemonList = () => {
 
     const handlePrevPage = () => {
         setCurrentPage(Math.max(0, currentPage - 1));
+
     };
 
     const totalResults = searchTerm
@@ -118,22 +118,18 @@ const PokemonList = () => {
         };
     };
 
-  return (
-    <>
-      <Toaster/>
-      <h1 style={{fontSize: '5vw', fontFamily: 'Pokemon Solid, sans-serif', marginBottom: '5%', color: '#ffcb05'}} className={"text-center"}>My Pokémon</h1>
-      <div className={"d-flex flex-column justify-content-center align-items-center gap-4"}>
-        <div>
-          <input
-            type="text"
-            placeholder="Rechercher par nom..."
-            className={"form-control border-1"}
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-          </div>
-            <Link style={{width: "20vw", fontSize: "1vw"}} className={"btn btn-warning"} to={{pathname: "/my-pokedex"}} ><img className={"pe-3"} style={{minWidth: "50px", width: "20%"}} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"}/>Accéder au pokédex personnel</Link>
-        <div className={"d-flex gap-3 flex-wrap justify-content-center align-items-center"}>
+    return (
+        <>
+            <Toaster />
+            <h1 style={{ fontSize: '5vw', fontFamily: 'Pokemon Solid, sans-serif', marginBottom: '5%', color: '#ffcb05' }} className={"text-center"}>My Pokémon</h1>
+            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}  className={"d-flex flex-column justify-content-center align-items-center gap-4"}/>
+            <div className={"d-flex flex-column justify-content-center align-items-center gap-4"}>
+                <Link style={{ width: "20vw", fontSize: "1vw" }} className={"btn btn-warning"} to={{ pathname: "/my-pokedex" }}>
+                    <img className={"pe-3"} style={{ minWidth: "50px", width: "20%" }} src={"https://www.freeiconspng.com/thumbs/pokeball-png/free-pokeball-download-3.png"} alt={"pokeball"} />
+                    Accéder au pokédex personnel
+                </Link>
+                <div className={"d-flex gap-3 flex-wrap justify-content-center align-items-center"}>
+
                     {displayedPokemon.map((pokemon, index) => (
                         <div key={index} className={"card pokemon-dislike-button"} style={{ width: '18rem', backgroundColor: colours[pokemon.types[0].type.name] }}>
                             <img className={"card-img-top"} src={pokemon.sprites.front_default} alt="Sprite pokémon" />
