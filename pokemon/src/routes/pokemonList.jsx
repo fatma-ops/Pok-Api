@@ -27,7 +27,9 @@ const PokemonList = () => {
             }
         };
 
+
         fetchAllPokemon();
+
     }, []);
 
     useEffect(() => {
@@ -62,6 +64,7 @@ const PokemonList = () => {
 
     const handlePrevPage = () => {
         setCurrentPage(Math.max(0, currentPage - 1));
+
     };
 
     const totalResults = searchTerm
@@ -126,6 +129,7 @@ const PokemonList = () => {
                     Accéder au pokédex personnel
                 </Link>
                 <div className={"d-flex gap-3 flex-wrap justify-content-center align-items-center"}>
+
                     {displayedPokemon.map((pokemon, index) => (
                         <div key={index} className={"card pokemon-dislike-button"} style={{ width: '18rem', backgroundColor: colours[pokemon.types[0].type.name] }}>
                             <img className={"card-img-top"} src={pokemon.sprites.front_default} alt="Sprite pokémon" />
