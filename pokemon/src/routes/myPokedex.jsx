@@ -55,7 +55,7 @@ export default function MyPokedex () {
       <Link className={"btn btn-primary m-5"} to={{pathname: "/"}}><FontAwesomeIcon className={"pe-2"} icon={faArrowCircleLeft}/>Retour à la page d'accueil</Link>
       <div className={"d-flex flex-column justify-content-center align-items-center"}>
       <h1>My pokédex</h1>
-        <div>
+        <div className={"my-5"}>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
       <h3>Liste des pokémons attrapés</h3>
